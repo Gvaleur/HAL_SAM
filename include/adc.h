@@ -1,5 +1,5 @@
 #pragma once
-#include "samc21.h"
+#include "sam.h"
 #include "genericClock.h"
 #include "semaphorePlus.h"
 #include "mutexPlus.h"

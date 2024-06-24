@@ -2,6 +2,7 @@
 #include "clock.h"
 #include "assert.h"
 
+
 I2C* I2C::instance[6];
 
 I2C::I2C(GenericClock& gclk, i2c0SdaPin_t sdaPin, i2c0SclPin_t sclPin, int baud)
@@ -58,10 +59,17 @@ void I2C::init(uint32_t sdaPin, uint32_t sclPin, GenericClock& gclk, int baud)
 	mSercom->I2CM.CTRLA.bit.ENABLE = 1;
 
 	// whait for enable to be done
+#if defined (SAMC21)
 	while (mSercom->I2CM.SYNCBUSY.bit.ENABLE)
 	{
 
 	}
+#elif defined (SAMD20)
+	while (mSercom->I2CM.STATUS.bit.SYNCBUSY)
+	{
+
+	}
+#endif
 
 	// force BUS to idle
 	mSercom->I2CM.STATUS.bit.BUSSTATE = 0x01;

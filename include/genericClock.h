@@ -1,11 +1,13 @@
 #pragma once
 #include "stdint.h"
+#include "sam.h"
 
 class GenericClock
 {
 public:
 	enum clock_t
 	{
+#if defined (SAMC21)
 		FDPLL_CLOCK = 0,
 		FDPLL_32_CLOCK = 1,
 		EIC_CLOCK = 2,
@@ -51,6 +53,36 @@ public:
 		TC5_CLOCK = 43,
 		TC6_CLOCK = 44,
 		TC7_CLOCK = 45
+#elif defined (SAMD20)
+		DFLL48M_REF_CLOCK = 0,
+		WDT_CLOCK = 1,
+		RTC_CLOCK = 2,
+		EIC_CLOCK = 3,
+		EVSYS_CHANNEL_0_CLOCK = 4,
+		EVSYS_CHANNEL_1_CLOCK = 5,
+		EVSYS_CHANNEL_2_CLOCK = 6,
+		EVSYS_CHANNEL_3_CLOCK = 7,
+		EVSYS_CHANNEL_4_CLOCK = 8,
+		EVSYS_CHANNEL_5_CLOCK = 9,
+		EVSYS_CHANNEL_6_CLOCK = 10,
+		EVSYS_CHANNEL_7_CLOCK = 11,
+		SERCOM0TO4_SLOW_CLOCK = 12,
+		SERCOM0_CORE_CLOCK = 13,
+		SERCOM1_CORE_CLOCK = 14,
+		SERCOM2_CORE_CLOCK = 15,
+		SERCOM3_CORE_CLOCK = 16,
+		SERCOM4_CORE_CLOCK = 17,
+		SERCOM5_CORE_CLOCK = 18,
+		TC0TO1_CLOCK = 19,
+		TC2TO3_CLOCK = 20,
+		TC4TO5_CLOCK = 21,
+		TC6TO7_CLOCK = 22,
+		ADC_CLOCK = 23,
+		AC_DIG_CLOCK = 24,
+		AC_ANA_CLOCK = 25,
+		DAC_CLOCK = 26,
+		PTC_CLOCK = 27
+#endif
 	};
 
 	enum input_t
@@ -61,8 +93,13 @@ public:
 		OSCULP32K = 3,
 		OSCK32K = 4,
 		XOSC32K = 5,
+#if defined (SAMC21)
 		OSC48M = 6,
 		DPLL96M = 7
+#elif defined (SAMD20)
+		OSC8M = 6,
+		DFLL48M = 7
+#endif
 	};
 
 	GenericClock(uint8_t generator, uint32_t outFreq, input_t input, bool enableOutput = false);

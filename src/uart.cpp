@@ -91,7 +91,7 @@ void Uart::init(uint32_t txPin, uint32_t rxPin, GenericClock& gclk, int baud)
 
 	// set USART pad connection
 	mSercom->USART.CTRLA.bit.RXPO = 1;
-	mSercom->USART.CTRLA.bit.TXPO = 2;
+	mSercom->USART.CTRLA.bit.TXPO = 0;
 	mSercom->USART.CTRLA.bit.DORD = 1;
 
 	// set internal clock
@@ -117,19 +117,33 @@ void Uart::init(uint32_t txPin, uint32_t rxPin, GenericClock& gclk, int baud)
 	mSercom->USART.INTENSET.bit.RXC = 1;
 
 	// wait for CTRLB is in sync
+#if defined (SAMC21)
 	while (mSercom->USART.SYNCBUSY.bit.CTRLB)
 	{
 
 	}
+#elif defined (SAMD20)
+	while (mSercom->USART.STATUS.bit.SYNCBUSY)
+	{
+
+	}
+#endif
 
 	// enable the USART
 	mSercom->USART.CTRLA.bit.ENABLE = 1;
 
+#if defined (SAMC21)
 	// wait for it to finish enable
 	while (mSercom->USART.SYNCBUSY.bit.ENABLE)
 	{
 
 	}
+#elif defined (SAMD20)
+while (mSercom->USART.STATUS.bit.SYNCBUSY)
+{
+
+}
+#endif
 }
 
 void Uart::write(uint8_t* data, int length)

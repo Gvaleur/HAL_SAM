@@ -1,5 +1,5 @@
 #include "nvMemory.h"
-#include "samc21.h"
+#include "sam.h"
 #include <assert.h>
 #include <cstring>
 #include <algorithm>

@@ -1,5 +1,5 @@
 #include "sdadc.h"
-#include "samc21.h"
+#include "sam.h"
 #include "gpio.h"
 #include "clock.h"
 

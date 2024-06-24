@@ -1,5 +1,10 @@
 #include "watchdog.h"
-#include "samc21.h"
+#include "sam.h"
+
+#ifdef SAMD20
+#define CTRLA CTRL
+#define WDT_CTRLA_ALWAYSON WDT_CTRL_ALWAYSON
+#endif
 
 Watchdog::Watchdog(timeOut_t timeOut)
 {
