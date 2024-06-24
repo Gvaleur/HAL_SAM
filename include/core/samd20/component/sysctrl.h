@@ -261,26 +261,26 @@ typedef union {
 } SYSCTRL_XOSC_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
-#define SYSCTRL_XOSC_OFFSET         0x10         /**< \brief (SYSCTRL_XOSC offset) XOSC Control */
-#define SYSCTRL_XOSC_RESETVALUE     _U_(0x0080)  /**< \brief (SYSCTRL_XOSC reset_value) XOSC Control */
+#define OSCCTRL_XOSCCTRL_OFFSET         0x10         /**< \brief (SYSCTRL_XOSC offset) XOSC Control */
+#define OSCCTRL_XOSCCTRL_RESETVALUE     _U_(0x0080)  /**< \brief (SYSCTRL_XOSC reset_value) XOSC Control */
 
-#define SYSCTRL_XOSC_ENABLE_Pos     1            /**< \brief (SYSCTRL_XOSC) Enable */
-#define SYSCTRL_XOSC_ENABLE         (_U_(0x1) << SYSCTRL_XOSC_ENABLE_Pos)
-#define SYSCTRL_XOSC_XTALEN_Pos     2            /**< \brief (SYSCTRL_XOSC) Crystal Oscillator Enable */
-#define SYSCTRL_XOSC_XTALEN         (_U_(0x1) << SYSCTRL_XOSC_XTALEN_Pos)
-#define SYSCTRL_XOSC_RUNSTDBY_Pos   6            /**< \brief (SYSCTRL_XOSC) Run during Standby */
-#define SYSCTRL_XOSC_RUNSTDBY       (_U_(0x1) << SYSCTRL_XOSC_RUNSTDBY_Pos)
-#define SYSCTRL_XOSC_ONDEMAND_Pos   7            /**< \brief (SYSCTRL_XOSC) Enable on Demand */
-#define SYSCTRL_XOSC_ONDEMAND       (_U_(0x1) << SYSCTRL_XOSC_ONDEMAND_Pos)
-#define SYSCTRL_XOSC_GAIN_Pos       8            /**< \brief (SYSCTRL_XOSC) Gain Value */
-#define SYSCTRL_XOSC_GAIN_Msk       (_U_(0x7) << SYSCTRL_XOSC_GAIN_Pos)
-#define SYSCTRL_XOSC_GAIN(value)    (SYSCTRL_XOSC_GAIN_Msk & ((value) << SYSCTRL_XOSC_GAIN_Pos))
-#define SYSCTRL_XOSC_AMPGC_Pos      11           /**< \brief (SYSCTRL_XOSC) Automatic Amplitude Gain Control */
-#define SYSCTRL_XOSC_AMPGC          (_U_(0x1) << SYSCTRL_XOSC_AMPGC_Pos)
-#define SYSCTRL_XOSC_STARTUP_Pos    12           /**< \brief (SYSCTRL_XOSC) Start-Up Time */
-#define SYSCTRL_XOSC_STARTUP_Msk    (_U_(0xF) << SYSCTRL_XOSC_STARTUP_Pos)
-#define SYSCTRL_XOSC_STARTUP(value) (SYSCTRL_XOSC_STARTUP_Msk & ((value) << SYSCTRL_XOSC_STARTUP_Pos))
-#define SYSCTRL_XOSC_MASK           _U_(0xFFC6)  /**< \brief (SYSCTRL_XOSC) MASK Register */
+#define OSCCTRL_XOSCCTRL_ENABLE_Pos     1            /**< \brief (SYSCTRL_XOSC) Enable */
+#define OSCCTRL_XOSCCTRL_ENABLE         (_U_(0x1) << OSCCTRL_XOSCCTRL_ENABLE_Pos)
+#define OSCCTRL_XOSCCTRL_XTALEN_Pos     2            /**< \brief (SYSCTRL_XOSC) Crystal Oscillator Enable */
+#define OSCCTRL_XOSCCTRL_XTALEN         (_U_(0x1) << OSCCTRL_XOSCCTRL_XTALEN_Pos)
+#define OSCCTRL_XOSCCTRL_RUNSTDBY_Pos   6            /**< \brief (SYSCTRL_XOSC) Run during Standby */
+#define OSCCTRL_XOSCCTRL_RUNSTDBY       (_U_(0x1) << OSCCTRL_XOSCCTRL_RUNSTDBY_Pos)
+#define OSCCTRL_XOSCCTRL_ONDEMAND_Pos   7            /**< \brief (SYSCTRL_XOSC) Enable on Demand */
+#define OSCCTRL_XOSCCTRL_ONDEMAND       (_U_(0x1) << OSCCTRL_XOSCCTRL_ONDEMAND_Pos)
+#define OSCCTRL_XOSCCTRL_GAIN_Pos       8            /**< \brief (SYSCTRL_XOSC) Gain Value */
+#define OSCCTRL_XOSCCTRL_GAIN_Msk       (_U_(0x7) << OSCCTRL_XOSCCTRL_GAIN_Pos)
+#define OSCCTRL_XOSCCTRL_GAIN(value)    (OSCCTRL_XOSCCTRL_GAIN_Msk & ((value) << OSCCTRL_XOSCCTRL_GAIN_Pos))
+#define OSCCTRL_XOSCCTRL_AMPGC_Pos      11           /**< \brief (SYSCTRL_XOSC) Automatic Amplitude Gain Control */
+#define OSCCTRL_XOSCCTRL_AMPGC          (_U_(0x1) << OSCCTRL_XOSCCTRL_AMPGC_Pos)
+#define OSCCTRL_XOSCCTRL_STARTUP_Pos    12           /**< \brief (SYSCTRL_XOSC) Start-Up Time */
+#define OSCCTRL_XOSCCTRL_STARTUP_Msk    (_U_(0xF) << OSCCTRL_XOSCCTRL_STARTUP_Pos)
+#define OSCCTRL_XOSCCTRL_STARTUP(value) (OSCCTRL_XOSCCTRL_STARTUP_Msk & ((value) << OSCCTRL_XOSCCTRL_STARTUP_Pos))
+#define OSCCTRL_XOSCCTRL_MASK           _U_(0xFFC6)  /**< \brief (SYSCTRL_XOSC) MASK Register */
 
 /* -------- SYSCTRL_XOSC32K : (SYSCTRL Offset: 0x14) (R/W 16) XOSC32K Control -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
@@ -647,7 +647,7 @@ typedef struct {
   __IO SYSCTRL_INTENSET_Type     INTENSET;    /**< \brief Offset: 0x04 (R/W 32) Interrupt Enable Set */
   __IO SYSCTRL_INTFLAG_Type      INTFLAG;     /**< \brief Offset: 0x08 (R/W 32) Interrupt Flag Status and Clear */
   __I  SYSCTRL_PCLKSR_Type       PCLKSR;      /**< \brief Offset: 0x0C (R/  32) Power and Clocks Status */
-  __IO SYSCTRL_XOSC_Type         XOSC;        /**< \brief Offset: 0x10 (R/W 16) XOSC Control */
+  __IO SYSCTRL_XOSC_Type         XOSCCTRL;        /**< \brief Offset: 0x10 (R/W 16) XOSC Control */
        RoReg8                    Reserved1[0x2];
   __IO SYSCTRL_XOSC32K_Type      XOSC32K;     /**< \brief Offset: 0x14 (R/W 16) XOSC32K Control */
        RoReg8                    Reserved2[0x2];
