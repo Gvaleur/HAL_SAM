@@ -5,6 +5,7 @@
 
 AdcMaster* AdcMaster::mInstance[2];
 
+#if defined (SAMC21)
 AdcMaster::AdcMaster(adc0_t adc, GenericClock& gclk, avg_t avg)
 	: mSem(1, 0)
 	, mAdc(ADC0)
@@ -22,6 +23,35 @@ AdcMaster::AdcMaster(adc0_t adc, GenericClock& gclk, avg_t avg)
 	NVIC_EnableIRQ(ADC0_IRQn);
 }
 
+#elif defined (SAMD20)
+AdcMaster::AdcMaster(GenericClock& gclk, avg_t avg)
+	: mSem(1, 0)
+	, mAdc(ADC)
+{
+	mInstance[0] = this;
+	Clock::enableClock(Clock::ADC_CLOCK);
+	gclk.enableClock(GenericClock::ADC_CLOCK);
+
+	uint32_t* nvmData;
+	nvmData = reinterpret_cast<uint32_t*>(ADC_FUSES_BIASCAL_ADDR);
+	uint8_t bias = (*nvmData & ADC_FUSES_BIASCAL_Msk) >> ADC_FUSES_BIASCAL_Pos;
+
+	nvmData = reinterpret_cast<uint32_t*>(ADC_FUSES_LINEARITY_0_ADDR);
+	uint8_t linearity = (*nvmData & ADC_FUSES_LINEARITY_0_Msk) >> ADC_FUSES_LINEARITY_0_Pos;
+	nvmData = reinterpret_cast<uint32_t*>(ADC_FUSES_LINEARITY_1_ADDR);
+	linearity |= ((*nvmData & ADC_FUSES_LINEARITY_1_Msk) >> ADC_FUSES_LINEARITY_1_Pos) << 5;
+
+	initAdc(gclk.getFreq(), bias, linearity, avg);
+	NVIC_EnableIRQ(ADC_IRQn);
+}
+#endif
+
+#ifdef SAMD20
+#define ADC_REFCTRL_REFSEL_INTVCC2 ADC_REFCTRL_REFSEL_INTVCC1
+#define ADC_CALIB_BIASCOMP_Pos ADC_CALIB_BIAS_CAL_Pos
+#define ADC_CALIB_BIASREFBUF_Pos ADC_CALIB_LINEARITY_CAL_Pos
+#endif
+
 void AdcMaster::initAdc(const uint32_t gFreq, const uint8_t biasComp, const uint8_t biasRef, avg_t avg)
 {
 	// set prescaler
@@ -29,13 +59,17 @@ void AdcMaster::initAdc(const uint32_t gFreq, const uint8_t biasComp, const uint
 	div = log2l(div) /*- 1*/;
 	mAdc->CTRLB.bit.PRESCALER = div;
 
+#ifdef SAMC21
 	mAdc->CTRLA.bit.ONDEMAND = true;
+#endif
 
 	// set ref to full vcc ref
 	mAdc->REFCTRL.reg = ADC_REFCTRL_REFCOMP | ADC_REFCTRL_REFSEL_INTVCC2;
 
+#ifdef SAMC21
 	// set rail to rail input
 	mAdc->CTRLC.reg = ADC_CTRLC_R2R | ADC_CTRLC_RESSEL_12BIT;
+#endif
 
 	// selct correct number of divisons to do on result
 	uint32_t adjRes;
@@ -61,9 +95,6 @@ void AdcMaster::initAdc(const uint32_t gFreq, const uint8_t biasComp, const uint
 	// set averaging of results
 	mAdc->AVGCTRL.reg = ADC_AVGCTRL_SAMPLENUM(avg) | ADC_AVGCTRL_ADJRES(adjRes);
 
-	// set offset compensation and sample length
-	mAdc->SAMPCTRL.reg = ADC_SAMPCTRL_OFFCOMP;
-
 	// load calibration data
 	mAdc->CALIB.reg = (biasComp << ADC_CALIB_BIASCOMP_Pos) | (biasRef << ADC_CALIB_BIASREFBUF_Pos);
 
@@ -79,7 +110,11 @@ uint16_t AdcMaster::sampleChannel(uint8_t channel)
 	EnterMutex lock(mLock);
 
 	// set mux
+#if defined (SAMC21)
 	mAdc->INPUTCTRL.reg = (0x18 << ADC_INPUTCTRL_MUXNEG_Pos) | channel;
+#elif defined (SAMD20)
+	mAdc->INPUTCTRL.reg = ADC_INPUTCTRL_MUXNEG_GND | channel | ADC_INPUTCTRL_GAIN_DIV2;
+#endif
 
 	// start conversion
 	mAdc->SWTRIG.bit.START = true;
@@ -104,9 +139,9 @@ AdcMaster* AdcMaster::getInstance(uint8_t adc)
 
 AdcChannel::AdcChannel(AdcMaster& master, AdcChannel_t channel)
 	: mMaster(master)
-	, mChannel(channel & 0xF)
+	, mChannel(channel & 0xFF)
 {
-	AlternateFunction::setFunction(static_cast<AlternateFunction::port_t>((channel >> 4) & 0xF), (channel >> 8) & 0xF, AlternateFunction::B);
+	AlternateFunction::setFunction(static_cast<AlternateFunction::port_t>((channel >> 8) & 0xFF), (channel >> 16) & 0xFF, AlternateFunction::B);
 }
 
 uint16_t AdcChannel::getValue()
@@ -125,5 +160,12 @@ void ADC0_Handler()
 void ADC1_Handler()
 {
 	AdcMaster::getInstance(1)->onInterrupt();
+}
+#endif
+
+#if configENABLE_ADC == 1
+void ADC_Handler()
+{
+	AdcMaster::getInstance(0)->onInterrupt();
 }
 #endif
