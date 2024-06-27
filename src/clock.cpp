@@ -61,8 +61,8 @@ void Clock::setMainClock(const clockType_t clockType, const uint32_t frequency)
 		SYSCTRL->DFLLCTRL.bit.ONDEMAND = 0;
 		SYSCTRL->DFLLCTRL.bit.MODE = 1;
 		SYSCTRL->DFLLMUL.bit.MUL = 3;
-		//SYSCTRL->DFLLVAL.bit.COARSE = 1;
-		//NVMCTRL_OTP2
+		SYSCTRL->DFLLMUL.bit.FSTEP = 1;
+		SYSCTRL->DFLLMUL.bit.CSTEP = 1;
 		SYSCTRL->DFLLCTRL.bit.ENABLE = 1;
 
 		// wait for DPLL to stabelise
