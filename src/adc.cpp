@@ -24,6 +24,10 @@ AdcMaster::AdcMaster(adc0_t adc, GenericClock& gclk, avg_t avg)
 }
 
 #elif defined (SAMD20)
+#define ADC_REFCTRL_REFSEL_INTVCC2 ADC_REFCTRL_REFSEL_INTVCC1
+#define ADC_CALIB_BIASCOMP_Pos ADC_CALIB_BIAS_CAL_Pos
+#define ADC_CALIB_BIASREFBUF_Pos ADC_CALIB_LINEARITY_CAL_Pos
+
 AdcMaster::AdcMaster(GenericClock& gclk, avg_t avg)
 	: mSem(1, 0)
 	, mAdc(ADC)
@@ -44,12 +48,6 @@ AdcMaster::AdcMaster(GenericClock& gclk, avg_t avg)
 	initAdc(gclk.getFreq(), bias, linearity, avg);
 	NVIC_EnableIRQ(ADC_IRQn);
 }
-#endif
-
-#ifdef SAMD20
-#define ADC_REFCTRL_REFSEL_INTVCC2 ADC_REFCTRL_REFSEL_INTVCC1
-#define ADC_CALIB_BIASCOMP_Pos ADC_CALIB_BIAS_CAL_Pos
-#define ADC_CALIB_BIASREFBUF_Pos ADC_CALIB_LINEARITY_CAL_Pos
 #endif
 
 void AdcMaster::initAdc(const uint32_t gFreq, const uint8_t biasComp, const uint8_t biasRef, avg_t avg)

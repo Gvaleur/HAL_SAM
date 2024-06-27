@@ -102,7 +102,7 @@ void Uart::init(uint32_t txPin, uint32_t rxPin, GenericClock& gclk, int baud)
 	mSercom->USART.CTRLB.bit.TXEN = 1;
 
 	// set baud rate
-	uint32_t baudReg = 65536 * (1 - 16 * (static_cast<double>(baud) / static_cast<double>(gclk.getFreq())));
+	uint32_t baudReg = static_cast<uint32_t>(65536.0 * (1.0 - 16.0 * (static_cast<double>(baud) / static_cast<double>(gclk.getFreq()))));
 	if (baudReg <= 0xFFFF)
 	{
 		mSercom->USART.BAUD.reg = baudReg;
@@ -139,10 +139,10 @@ void Uart::init(uint32_t txPin, uint32_t rxPin, GenericClock& gclk, int baud)
 
 	}
 #elif defined (SAMD20)
-while (mSercom->USART.STATUS.bit.SYNCBUSY)
-{
-
-}
+	while (mSercom->USART.STATUS.bit.SYNCBUSY)
+	{
+	
+	}
 #endif
 }
 
